@@ -38,6 +38,32 @@ namespace boost { namespace geometry
 namespace dispatch
 {
 
+template <typename Point, typename Segment, typename Strategy>
+struct closest_points_policy
+{
+    //typedef typename strategy::distance::services::return_type
+    //        <
+    //            Strategy, Point, typename point_type<Segment>::type
+    //        >::type return_type;
+
+    closest_points_policy(Strategy strategy)
+        : m_strategy(strategy)
+    {}
+
+    typedef void return_type;
+
+    template <typename PointType>
+    return_type apply(PointType const& p1,
+                      PointType const& p2,
+                      PointType const& p)
+    {
+        m_strategy.apply_closest_points(p1, p2, p, this->m_shortest_seg);
+    }
+
+    Segment m_shortest_seg;
+private :
+    Strategy m_strategy;
+};
 
 template
 <
@@ -53,6 +79,15 @@ struct closest_points
         Strategy const& strategy)
     {
 
+        typedef closest_points_policy<Geometry1, Geometry2, Strategy> Policy;
+        Policy policy(strategy);
+
+        distance <
+                                Geometry1, Geometry2, Policy,
+                                point_tag, segment_tag, strategy_tag_distance_point_segment,
+                                false
+                            >::apply(g1, g2, policy);
+        shortest_seg = policy.m_shortest_seg;
     }
 };
 

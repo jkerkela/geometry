@@ -113,6 +113,28 @@ public :
                                   m_spheroid)).distance;
     }
 
+    template <typename Point, typename PointOfSegment, typename Segment>
+    inline void apply_closest_points(Point const& p,
+                                     PointOfSegment const& sp1,
+                                     PointOfSegment const& sp2,
+                                     Segment& s) const
+    {
+        typedef typename coordinate_system<Point>::type::units units_type;
+
+        result_distance_point_segment<typename return_type<Point, PointOfSegment>::type>
+                res = apply<units_type>(get<0>(sp1), get<1>(sp1),
+                                        get<0>(sp2), get<1>(sp2),
+                                        get<0>(p), get<1>(p),
+                                        m_spheroid);
+
+        //Point point;
+        set_from_radian<0,0>(s, get_as_radian<0>(p));
+        set_from_radian<0,1>(s, get_as_radian<1>(p));
+        set_from_radian<1,0>(s, res.closest_point_lon);
+        set_from_radian<1,1>(s, res.closest_point_lat);
+
+    }
+
     // points on a meridian not crossing poles
     template <typename CT>
     inline CT vertical_or_meridian(CT lat1, CT lat2) const
@@ -464,6 +486,7 @@ private :
             s14 = s14 - delta_g4 / der;
             result.distance = res34.distance;
 
+
             dist_improve = prev_distance > res34.distance || prev_distance == -1;
             if (!dist_improve)
             {
@@ -544,6 +567,12 @@ private :
             std::cout << "There is a closer point nearby" << std::endl;
         }
 #endif
+
+        if (EnableClosestPoint)
+        {
+            result.closest_point_lon = res14.lon2;
+            result.closest_point_lat = res14.lat2;
+        }
 
         return result;
     }
