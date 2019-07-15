@@ -28,7 +28,7 @@ struct error{
 void check_result(double const& result, double const& expected,
                   double const& reference, error const& reference_error)
 {
-    BOOST_GEOMETRY_CHECK_CLOSE(result, expected, 0.0000001,
+    BOOST_GEOMETRY_CHECK_CLOSE(result, expected, 0.0001,
         std::setprecision(20) << "result {" << result << "} different than expected {" << expected << "}.");
 
     double reference_error_value = result > 2000 ? reference_error.long_distance
