@@ -1,6 +1,6 @@
 // Boost.Geometry (aka GGL, Generic Geometry Library)
 
-// Copyright (c) 2014-2019, Oracle and/or its affiliates.
+// Copyright (c) 2014-2020, Oracle and/or its affiliates.
 
 // Contributed and/or modified by Menelaos Karavelas, on behalf of Oracle
 // Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
@@ -14,7 +14,11 @@
 #include <algorithm>
 #include <deque>
 
-#include <boost/range.hpp>
+#include <boost/range/begin.hpp>
+#include <boost/range/empty.hpp>
+#include <boost/range/end.hpp>
+#include <boost/range/size.hpp>
+#include <boost/range/value_type.hpp>
 
 #include <boost/geometry/core/assert.hpp>
 #include <boost/geometry/core/closure.hpp>
@@ -206,14 +210,7 @@ inline bool has_self_intersections(Linear const& linear, Strategy const& strateg
     typedef typename point_type<Linear>::type point_type;
 
     // compute self turns
-    typedef detail::overlay::turn_info
-        <
-            point_type,
-            geometry::segment_ratio
-                <
-                    typename geometry::coordinate_type<point_type>::type
-                >
-        > turn_info;
+    typedef detail::overlay::turn_info<point_type> turn_info;
 
     std::deque<turn_info> turns;
 

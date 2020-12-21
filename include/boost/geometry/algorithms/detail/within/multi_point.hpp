@@ -1,6 +1,6 @@
 // Boost.Geometry
 
-// Copyright (c) 2017, 2019 Oracle and/or its affiliates.
+// Copyright (c) 2017-2020, Oracle and/or its affiliates.
 
 // Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
@@ -15,8 +15,10 @@
 #include <algorithm>
 #include <vector>
 
-#include <boost/range.hpp>
-#include <boost/type_traits/is_same.hpp>
+#include <boost/range/begin.hpp>
+#include <boost/range/end.hpp>
+#include <boost/range/size.hpp>
+#include <boost/range/value_type.hpp>
 
 #include <boost/geometry/algorithms/detail/disjoint/box_box.hpp>
 #include <boost/geometry/algorithms/detail/disjoint/point_box.hpp>
@@ -36,6 +38,8 @@
 
 #include <boost/geometry/strategies/covered_by.hpp>
 #include <boost/geometry/strategies/disjoint.hpp>
+
+#include <boost/geometry/util/type_traits.hpp>
 
 
 namespace boost { namespace geometry {
@@ -167,15 +171,7 @@ struct multi_point_multi_geometry
     {
         typedef typename point_type<LinearOrAreal>::type point2_type;
         typedef model::box<point2_type> box2_type;
-        static const bool is_linear = is_same
-            <
-                typename tag_cast
-                    <
-                        typename tag<LinearOrAreal>::type,
-                        linear_tag
-                    >::type,
-                linear_tag
-            >::value;
+        static const bool is_linear = util::is_linear<LinearOrAreal>::value;
 
         typename Strategy::envelope_strategy_type const
             envelope_strategy = strategy.get_envelope_strategy();
@@ -223,15 +219,21 @@ struct multi_point_multi_geometry
             bool found_boundary = false;
             int boundaries = 0;
 
-            typedef typename box_pair_vector::const_iterator iterator;
-            for ( iterator box_it = inters_boxes.begin() ; box_it != inters_boxes.end() ; ++box_it )
+            typedef typename box_pair_vector::const_iterator box_iterator;
+            for (box_iterator box_it = inters_boxes.begin() ;
+                 box_it != inters_boxes.end() ; ++box_it )
             {
-                int in_val = point_in_geometry(*it, range::at(linear_or_areal, box_it->second), strategy);
+                int const in_val = point_in_geometry(*it,
+                    range::at(linear_or_areal, box_it->second), strategy);
 
                 if (in_val > 0)
+                {
                     found_interior = true;
+                }
                 else if (in_val == 0)
+                {
                     ++boundaries;
+                }
 
                 // If the result was set previously (interior or
                 // interior/boundary found) the only thing that needs to be
@@ -243,12 +245,16 @@ struct multi_point_multi_geometry
                 }
             }
 
-            if ( boundaries > 0)
+            if (boundaries > 0)
             {
                 if (is_linear && boundaries % 2 == 0)
+                {
                     found_interior = true;
+                }
                 else
+                {
                     found_boundary = true;
+                }
             }
 
             // exterior

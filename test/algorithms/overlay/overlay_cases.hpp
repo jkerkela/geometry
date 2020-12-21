@@ -838,6 +838,30 @@ static std::string case_precision_22[2] =
     "POLYGON((-1 -1,-1 8,8 8,8 -1,-1 -1),(2 7,2 3,4.00000000200000017 2.99999999000000006,4 7,2 7))"
 };
 
+static std::string case_precision_23[2] =
+{
+    "POLYGON((0 0,0 4,2 4,2 3,4 3,4 0,0 0))",
+    "POLYGON((-1 -1,-1 8,8 8,8 -1,-1 -1),(2 7,2 3,3.99998999999999993 2.99998999999999993,4 7,2 7))"
+};
+
+static std::string case_precision_24[2] =
+{
+    "POLYGON((0 0,0 4,2 4,2 3,4 3,4 0,0 0))",
+    "POLYGON((2 7,4 7,4 3.000001,2 3,2 7))"
+};
+
+static std::string case_precision_25[2] =
+{
+    "POLYGON((0 0,0 4,2 4,2 3,4 3,4 0,0 0))",
+    "POLYGON((2 7,4 7,4 3.00001,2 3,2 7))"
+};
+
+static std::string case_precision_26[2] =
+{
+    "POLYGON((0 0,0 4,2 4,2 3,4 3,4 0,0 0))",
+    "POLYGON((-1 -1,-1 8,8 8,8 -1,-1 -1),(2 7,2 3,3.999991 2.999991,4 7,2 7))"
+};
+
 
 // ticket_17 is keyholed, so has a hole formed by an deliberate intersection
 // This will fail the intersection/traversal process
@@ -885,7 +909,7 @@ static std::string ggl_list_20110716_enrico[2] =
 
 
 // Send on ggl-list by Christoph/Angus at 2011-08-19/20
-// This polygon combination fails to union in <float> but do in <double> or <ttmath>
+// This polygon combination fails to union in <float> but do in <double>
 // It had previosly an error which has been fixed at 2011-08-30
 static std::string ggl_list_20110820_christophe[2] =
 {

@@ -16,6 +16,7 @@
 #include <boost/geometry/algorithms/detail/signed_size_type.hpp>
 #include <boost/geometry/algorithms/detail/overlay/segment_identifier.hpp>
 #include <boost/geometry/algorithms/detail/overlay/overlay_type.hpp>
+#include <boost/geometry/policies/robustness/segment_ratio.hpp>
 
 namespace boost { namespace geometry
 {
@@ -77,7 +78,7 @@ struct turn_operation
 template
 <
     typename Point,
-    typename SegmentRatio,
+    typename SegmentRatio = geometry::segment_ratio<typename coordinate_type<Point>::type>,
     typename Operation = turn_operation<Point, SegmentRatio>,
     typename Container = boost::array<Operation, 2>
 >

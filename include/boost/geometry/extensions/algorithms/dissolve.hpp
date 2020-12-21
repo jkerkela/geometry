@@ -2,8 +2,8 @@
 
 // Copyright (c) 2007-2012 Barend Gehrels, Amsterdam, the Netherlands.
 
-// This file was modified by Oracle on 2017, 2019.
-// Modifications copyright (c) 2019, Oracle and/or its affiliates.
+// This file was modified by Oracle on 2017-2020.
+// Modifications copyright (c) 2019-2020, Oracle and/or its affiliates.
 // Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
 // Use, modification and distribution is subject to the Boost Software License,
@@ -17,7 +17,10 @@
 #include <map>
 #include <deque>
 
-#include <boost/range.hpp>
+#include <boost/range/begin.hpp>
+#include <boost/range/end.hpp>
+#include <boost/range/size.hpp>
+#include <boost/range/value_type.hpp>
 
 #include <boost/geometry/algorithms/detail/overlay/get_turns.hpp>
 #include <boost/geometry/algorithms/detail/overlay/self_turn_points.hpp>
@@ -42,6 +45,8 @@
 #include <boost/geometry/geometries/concepts/check.hpp>
 
 #include <boost/geometry/multi/geometries/multi_polygon.hpp>
+
+#include <boost/geometry/policies/robustness/segment_ratio_type.hpp>
 
 #include <boost/geometry/extensions/algorithms/detail/overlay/dissolver.hpp>
 #include <boost/geometry/extensions/algorithms/detail/overlay/dissolve_traverse.hpp>
@@ -200,12 +205,9 @@ struct dissolve_ring
         cluster_type clusters;
 
         // Enrich/traverse the polygons
-        typename Strategy::side_strategy_type const
-            side_strategy = strategy.get_side_strategy();
-
         enrich_intersection_points<Reverse, Reverse, overlay_dissolve>(turns,
                     clusters, input_ring, input_ring, rescale_policy,
-                    side_strategy);
+                    strategy);
 
         visitor.visit_turns(2, turns);
 
@@ -374,7 +376,7 @@ struct dissolve_polygon
         // expect - alternatively, difference could be used to have them pure
         // as interior rings only
         return detail::sym_difference::sym_difference_insert<GeometryOut>(
-                    exterior_out, interior_out, rescale_policy, out);
+                    exterior_out, interior_out, out);
     }
 };
 
